@@ -1,0 +1,185 @@
+{% extends 'pemilwa/base.html' %}
+{% load static %}
+
+{% block title %}Pemilihan Kahim{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/voting.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="info-voter">
+        <h2>Halo, <strong>{{ nama }}</strong> ({{ nim }})</h2>
+        <h1></h1>
+        <p class="hint">
+            {% if voting_closed %}
+                Pemungutan suara telah ditutup.
+            {% else %}
+                Silakan pilih salah satu opsi di bawah ini
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="divider"></div>
+
+    {% if voting_closed %}
+    <section class="closed-voting-card" role="status" aria-live="polite">
+        <div class="closed-voting-mark" aria-hidden="true"></div>
+        <h2>Pemungutan Suara Ditutup</h2>
+        <p>
+            Maaf untuk Pemungutan Suara Calon Ketua Umum HMTI FT-UB Periode 2026-2027
+            sudah ditutup. Terima kasih atas partisipasinya.
+        </p>
+    </section>
+    {% else %}
+    <form method="POST" action="{% url 'pemilwa:submit_vote' %}" id="voteForm">
+        {% csrf_token %}
+
+        <div class="pilihan-container">
+
+            <!-- KARTU CALON -->
+            <div class="card-pilihan" id="card-calon" onclick="selectPilihan('calon')">
+                <div class="card-body-pilihan">
+                    <img src="{% static 'MOONBOARD DESAIN KMTI 2025.webp' %}" alt="Foto Calon" class="foto-calon">
+                    <h4>{{ calon.nama_calon }}</h4>
+                    <p class="sub">Calon Ketua Himpunan</p>
+                    <span class="expand-btn" onclick="event.stopPropagation(); openVisiMisiModal()">📋 Lihat Visi &amp; Misi</span>
+                    <div class="selected-check">✔ Dipilih</div>
+                </div>
+            </div>
+
+            <!-- KARTU ABSTAIN -->
+            <div class="card-pilihan" id="card-abstain" onclick="selectPilihan('abstain')">
+                <div class="card-body-pilihan">
+                    <div class="abstain-icon">⊘</div>
+                    <h4>Abstain</h4>
+                    <p class="sub">Tidak memilih calon manapun</p>
+                    <p class="abstain-note">Suara Anda dihitung sebagai abstain</p>
+                    <div class="selected-check">✔ Dipilih</div>
+                </div>
+            </div>
+
+        </div>
+
+        <input type="hidden" name="pilihan" id="pilihan" value="">
+
+        <div class="submit-area">
+            <button type="button" class="btn-vote" id="btnSubmitVote" disabled>
+                Konfirmasi Pilihan
+            </button>
+            <p class="note-bottom">*Pilihan Anda tidak dapat diubah setelah dikonfirmasi</p>
+        </div>
+
+    </form>
+
+    <!-- MODAL KONFIRMASI VOTE -->
+    <div id="confirmModal" class="custom-modal">
+        <div class="custom-modal-content" id="modalContent"></div>
+    </div>
+
+    <!-- MODAL VISI MISI -->
+    <div id="visiMisiModal" class="custom-modal">
+        <div class="visi-misi-modal-content">
+            <div class="vm-header">
+                📋 Visi &amp; Misi
+                <span onclick="closeVisiMisiModal()" style="cursor:pointer; color:rgba(255,255,255,0.85); font-size:20px;">&times;</span>
+            </div>
+            <div class="vm-body">
+                <h5>Visi</h5>
+                <p>{{ calon.visi|linebreaks }}</p>
+                <hr>
+                <h5>Misi</h5>
+                <p>{{ calon.misi|linebreaks }}</p>
+            </div>
+            <div class="vm-footer">
+                <button class="btn-modal confirm" onclick="closeVisiMisiModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+{% if not voting_closed %}
+<script>
+    let pilihanSaatIni = null;
+
+    function selectPilihan(pilihan) {
+        pilihanSaatIni = pilihan;
+
+        document.getElementById('card-calon').classList.remove('selected');
+        document.getElementById('card-abstain').classList.remove('selected');
+
+        if (pilihan === 'calon') {
+            document.getElementById('card-calon').classList.add('selected');
+        } else {
+            document.getElementById('card-abstain').classList.add('selected');
+        }
+
+        document.getElementById('pilihan').value = pilihan;
+
+        const btn = document.getElementById('btnSubmitVote');
+        btn.disabled = false;
+        btn.classList.add('active');
+        btn.innerHTML = pilihan === 'calon'
+            ? 'Pilih {{ calon.nama_calon }}'
+            : 'Konfirmasi Abstain';
+    }
+
+    function openVisiMisiModal() {
+        document.getElementById('visiMisiModal').style.display = 'flex';
+    }
+
+    function closeVisiMisiModal() {
+        document.getElementById('visiMisiModal').style.display = 'none';
+    }
+
+    function showConfirmModal() {
+        const modal = document.getElementById('confirmModal');
+        const modalContent = document.getElementById('modalContent');
+        const isCalon = pilihanSaatIni === 'calon';
+
+        modalContent.innerHTML = `
+            <div class="modal-body">
+                <p><strong>${isCalon ? 'Memilih Calon' : 'Abstain'}</strong></p>
+                <p>${isCalon
+                    ? 'Apakah Anda yakin ingin memilih <strong>{{ calon.nama_calon }}</strong>?'
+                    : 'Apakah Anda yakin ingin <strong>ABSTAIN</strong>?'}</p>
+                <small>⚠️ Pilihan tidak dapat diubah setelah dikonfirmasi!</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal cancel" onclick="closeModal()">❌ Batal</button>
+                <button type="button" class="btn-modal confirm" onclick="confirmVote()">✅ Ya, Saya Yakin</button>
+            </div>
+        `;
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('confirmModal').style.display = 'none';
+    }
+
+    function confirmVote() {
+        closeModal();
+        document.getElementById('voteForm').submit();
+    }
+
+    document.getElementById('btnSubmitVote').addEventListener('click', function () {
+        if (!pilihanSaatIni) {
+            alert('Silakan pilih salah satu opsi terlebih dahulu!');
+            return;
+        }
+        showConfirmModal();
+    });
+
+    window.onclick = function (event) {
+        const confirmModal = document.getElementById('confirmModal');
+        const visiMisiModal = document.getElementById('visiMisiModal');
+        if (event.target === confirmModal) closeModal();
+        if (event.target === visiMisiModal) closeVisiMisiModal();
+    };
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,479 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        background-color: #f5f5f5;
+        font-family: 'Montserrat', sans-serif;
+        color: #333;
+        padding: 92px 16px 30px;
+    }
+
+    .info-voter {
+        text-align: center;
+        margin: 0 auto 30px;
+        padding: 18px 24px;
+        background: #fff;
+        border-radius: 12px;
+        border: 1.5px solid #A09323;
+        box-shadow: 0 2px 10px rgba(160, 147, 35, 0.12);
+        width: 100%;
+        max-width: 920px;
+    }
+
+    .info-voter h2 {
+        font-size: 22px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 4px;
+        font-family: 'Courier Prime', monospace;
+    }
+
+    .info-voter .period {
+        color: #A09323;
+        font-size: 13px;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .info-voter .voter-name {
+        font-size: 15px;
+        color: #444;
+        margin-bottom: 4px;
+    }
+
+    .info-voter .voter-name strong {
+        color: #333;
+    }
+
+    .info-voter .hint {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .pilihan-container {
+        display: flex;
+        justify-content: center;
+        gap: 28px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .card-pilihan {
+        width: 270px;
+        border-radius: 14px;
+        border: 1.5px solid #A09323;
+        background: #fff;
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(160, 147, 35, 0.10);
+    }
+
+    .card-pilihan:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(160, 147, 35, 0.22);
+        border-color: #DED479;
+    }
+
+    .card-pilihan.selected {
+        border: 2.5px solid transparent;
+
+        background:
+            linear-gradient(
+                rgba(190,196,217,0.18) 0%,
+                rgba(222,212,121,0.18) 100%
+            ) padding-box,
+
+            linear-gradient(
+                #DED479 0%,
+                #BEC4D9 100%
+            ) border-box;
+
+        box-shadow:
+            0 0 0 3px rgba(160,147,35,0.10),
+            0 10px 25px rgba(160,147,35,0.12);
+    }
+
+    .card-header-pilihan {
+        padding: 20px;
+        text-align: center;
+        font-size: 36px;
+    }
+
+    .card-header-pilihan.calon {
+        background: linear-gradient(135deg, #A09323, #DED479);
+        color: #2f2f2f;
+        border-bottom: 2px solid #A09323;
+    }
+
+    .card-header-pilihan.abstain {
+        background: linear-gradient(135deg, #BEC4D9, #DED479);
+        color: #2f2f2f;
+        border-bottom: 2px solid #A09323;
+    }
+
+    .card-body-pilihan {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .card-body-pilihan h4 {
+        margin: 0 0 6px 0;
+        font-size: 18px;
+        color: #222;
+    }
+
+    .card-body-pilihan .sub {
+        color: #888;
+        font-size: 13px;
+        margin-bottom: 14px;
+    }
+
+    .foto-calon {
+        width: 200px;
+        height: 300px;
+        object-fit: cover;
+        margin: 0 auto 14px;
+        display: block;
+        border: 2px solid #A09323;
+        border-radius: 6px;
+    }
+
+    .expand-btn {
+        display: inline-block;
+        cursor: pointer;
+        color: #A09323;
+        border: 1px solid #A09323;
+        border-radius: 20px;
+        padding: 5px 14px;
+        font-size: 12px;
+        transition: background 0.2s, color 0.2s;
+        text-decoration: none;
+    }
+
+    .expand-btn:hover {
+        background: #A09323;
+        color: #fff;
+    }
+
+    .abstain-icon {
+        font-size: 52px;
+        margin: 10px 0 14px;
+    }
+
+    .abstain-note {
+        font-size: 12px;
+        color: #aaa;
+        margin-top: 6px;
+    }
+
+    .selected-check {
+        display: none;
+        margin-top: 10px;
+        color: #A09323;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .card-pilihan.selected .selected-check {
+        display: block;
+    }
+
+    .submit-area {
+        text-align: center;
+        margin-top: 32px;
+    }
+
+    .btn-vote {
+        padding: 13px 44px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 50px;
+        border: 2px solid #BEC4D9;
+        background: #fff;
+        color: #aaa;
+        cursor: not-allowed;
+        transition: all 0.25s ease;
+    }
+
+    .btn-vote.active {
+        background: #A09323;
+        border-color: #A09323;
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(160, 147, 35, 0.3);
+    }
+
+    .btn-vote.active:hover {
+        background: #8a7d1e;
+        border-color: #8a7d1e;
+        transform: translateY(-2px);
+    }
+
+    .note-bottom {
+        color: #aaa;
+        font-size: 11px;
+        margin-top: 12px;
+        font-style: italic;
+    }
+
+    .divider {
+        height: 3px;
+        background: linear-gradient(to right, #BEC4D9, #A09323, #DED479, #A09323, #BEC4D9);
+        border-radius: 2px;
+        margin: 28px auto;
+        max-width: 400px;
+    }
+
+    .closed-voting-card {
+        width: min(760px, 100%);
+        margin: 38px auto 0;
+        padding: 42px 46px;
+        text-align: center;
+        border: 1.5px solid rgba(160,147,35,0.58);
+        border-radius: 18px;
+        background:
+            linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255,253,240,0.90)),
+            radial-gradient(circle at top left, rgba(222,212,121,0.24), transparent 34%),
+            radial-gradient(circle at bottom right, rgba(190,196,217,0.24), transparent 36%);
+        box-shadow: 0 18px 42px rgba(31,32,27,0.14);
+    }
+
+    .closed-voting-mark {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 20px;
+        border-radius: 999px;
+        border: 2px solid rgba(160,147,35,0.48);
+        background:
+            linear-gradient(135deg, #DED479, #BEC4D9);
+        position: relative;
+        box-shadow: 0 12px 24px rgba(160,147,35,0.20);
+    }
+
+    .closed-voting-mark::before,
+    .closed-voting-mark::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 30px;
+        height: 3px;
+        border-radius: 999px;
+        background: #2f2f2f;
+        transform-origin: center;
+    }
+
+    .closed-voting-mark::before {
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .closed-voting-mark::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    .closed-voting-card h2 {
+        margin-bottom: 12px;
+        color: #2f2f2f;
+        font-family: 'Courier Prime', monospace;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .closed-voting-card p {
+        max-width: 590px;
+        margin: 0 auto;
+        color: #5f5f55;
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    /* Modal */
+    .custom-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        padding: 112px 16px 28px;
+        background-color: rgba(0,0,0,0.45);
+        justify-content: center;
+        align-items: flex-start;
+        overflow-y: auto;
+    }
+
+    #visiMisiModal.custom-modal {
+        padding-top: 100px;
+    }
+
+    .custom-modal-content {
+        background: #fff;
+        border-radius: 14px;
+        width: 420px;
+        max-width: 92%;
+        text-align: center;
+        animation: slideIn 0.25s ease;
+        border: 1.5px solid #A09323;
+        overflow: hidden;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(-30px); opacity: 0; }
+        to   { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+        padding: 18px;
+        font-size: 36px;
+        position: relative;
+    }
+
+    .modal-header.calon {
+        background: linear-gradient(135deg, #A09323, #DED479);
+        border-bottom: 2px solid #A09323;
+    }
+
+    .modal-header.abstain {
+        background: linear-gradient(135deg, #BEC4D9, #DED479);
+        border-bottom: 2px solid #A09323;
+    }
+
+    .modal-body {
+        padding: 20px 24px;
+    }
+
+    .modal-body p {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .modal-body small {
+        color: #dc3545;
+        font-size: 13px;
+    }
+
+    .modal-footer {
+        padding: 14px 20px 20px;
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        border-top: 1px solid #eee;
+    }
+
+    .btn-modal {
+        padding: 9px 24px;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .btn-modal.confirm {
+        background: #A09323;
+        color: #fff;
+    }
+    .btn-modal.confirm:hover { background: #8a7d1e; }
+
+    .btn-modal.cancel {
+        background: #fff;
+        color: #dc3545;
+        border: 1.5px solid #dc3545;
+    }
+    .btn-modal.cancel:hover { background: #dc3545; color: #fff; }
+
+    .close-modal {
+        position: absolute;
+        right: 14px; top: 8px;
+        font-size: 22px;
+        cursor: pointer;
+        color: rgba(255,255,255,0.8);
+        line-height: 1;
+    }
+    .close-modal:hover { color: #fff; }
+
+    /* Visi Misi Modal */
+    .visi-misi-modal-content {
+        background: #fff;
+        border-radius: 14px;
+        width: 500px;
+        max-width: 92%;
+        animation: slideIn 0.25s ease;
+        border: 1.5px solid #A09323;
+        overflow: hidden;
+    }
+
+    .vm-header {
+        padding: 16px 20px;
+        background: #A09323;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .vm-body {
+        padding: 20px 24px;
+        max-height: min(54vh, 520px);
+        overflow-y: auto;
+        text-align: left;
+    }
+
+    .vm-body h5 {
+        color: #A09323;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .vm-body p {
+        font-size: 14px;
+        color: #444;
+        line-height: 1.6;
+        margin-bottom: 14px;
+    }
+
+    .vm-body hr {
+        border: none;
+        border-top: 1px solid #DED479;
+        margin: 14px 0;
+    }
+
+    .vm-footer {
+        padding: 12px 20px;
+        border-top: 1px solid #eee;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding-top: 104px;
+        }
+
+        .custom-modal {
+            padding-top: 88px;
+            padding-bottom: 18px;
+        }
+
+        #visiMisiModal.custom-modal {
+            padding-top: 112px;
+        }
+
+        .info-voter {
+            max-width: 100%;
+        }
+
+        .closed-voting-card {
+            padding: 34px 24px;
+            margin-top: 30px;
+        }
+
+        .closed-voting-card h2 {
+            font-size: 24px;
+        }
+    }

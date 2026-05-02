@@ -1,0 +1,229 @@
+    :root{
+        /* Base */
+        --bg-base: #ffffff;
+
+        /* Moodboard */
+        --gold-main: #A09323;
+        --gold-soft: #DED479;
+        --blue-soft: #BEC4D9;
+
+        --text-dark: #2f2f2f;
+
+        --shadow-soft:
+            0 10px 30px rgba(0,0,0,0.08);
+
+        --gradient-main:
+            linear-gradient(
+                135deg,
+                #A09323,
+                #DED479
+            );
+    }
+
+    body{
+        background: var(--bg-base);
+        color: var(--text-dark);
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    /* =========================
+       WRAPPER
+    ========================== */
+    .thanks-wrapper{
+        min-height: 85vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* =========================
+       CARD
+    ========================== */
+    .thanks-card{
+        position: relative;
+        overflow: hidden;
+
+        border: none;
+        border-radius: 30px;
+
+        background: #ffffff;
+
+        box-shadow: var(--shadow-soft);
+    }
+
+    /* Moodboard shading */
+    .thanks-card::before{
+        content: '';
+        position: absolute;
+        inset: 0;
+
+        background:
+            radial-gradient(
+                circle at top left,
+                rgba(222,212,121,0.18),
+                transparent 35%
+            ),
+
+            radial-gradient(
+                circle at bottom right,
+                rgba(190,196,217,0.22),
+                transparent 35%
+            );
+
+        pointer-events: none;
+    }
+
+    .thanks-card > *{
+        position: relative;
+        z-index: 2;
+    }
+
+    /* =========================
+       BODY
+    ========================== */
+    .thanks-body{
+        padding: 60px 40px;
+    }
+
+    /* =========================
+       ICON
+    ========================== */
+    .thanks-icon{
+        width: 120px;
+        height: 120px;
+
+        margin: 0 auto 24px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: var(--gradient-main);
+
+        font-size: 52px;
+
+        box-shadow:
+            0 12px 24px rgba(160,147,35,0.25);
+    }
+
+    /* =========================
+       TITLE
+    ========================== */
+    .thanks-title{
+        font-size: 40px;
+        font-weight: 800;
+
+        margin-bottom: 14px;
+
+        color: var(--gold-main);
+        font-family: 'Courier Prime', monospace;
+    }
+
+    .thanks-subtitle{
+        font-size: 20px;
+        font-weight: 500;
+
+        margin-bottom: 10px;
+    }
+
+    .thanks-description{
+        color: #666;
+        margin-bottom: 28px;
+    }
+
+    /* =========================
+       DIVIDER
+    ========================== */
+    hr{
+        border: none;
+        height: 1px;
+
+        background:
+            linear-gradient(
+                90deg,
+                transparent,
+                rgba(160,147,35,0.4),
+                transparent
+            );
+
+        margin: 28px 0;
+    }
+
+    /* =========================
+       COUNTDOWN
+    ========================== */
+    .redirect-text{
+        color: #777;
+        font-size: 15px;
+    }
+
+    #countdown{
+        color: var(--gold-main);
+        font-weight: 800;
+        font-size: 20px;
+    }
+
+    /* =========================
+       BUTTON
+    ========================== */
+    .btn-primary{
+        background: linear-gradient(
+            135deg,
+            #A09323,
+            #DED479
+        );
+
+        border: none;
+
+        border-radius: 18px;
+
+        padding: 12px 28px;
+
+        font-weight: 700;
+
+        transition: all 0.3s ease;
+
+        box-shadow:
+            0 8px 20px rgba(160,147,35,0.25);
+    }
+
+    .btn-primary:hover{
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 12px 28px rgba(160,147,35,0.35);
+
+        filter: brightness(1.03);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================== */
+    @media (max-width: 768px){
+
+        .thanks-body{
+            padding: 45px 24px;
+        }
+
+        .thanks-title{
+            font-size: 32px;
+        }
+
+        .thanks-subtitle{
+            font-size: 18px;
+        }
+
+        .thanks-card{
+            border-radius: 24px;
+        }
+
+        .thanks-icon{
+            width: 100px;
+            height: 100px;
+            font-size: 44px;
+        }
+    }
+

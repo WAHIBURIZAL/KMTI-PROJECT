@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pemilihan Kahim{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar-kmti fixed-top">
+        <div class="container d-flex justify-content-between align-items-center">
+
+            <div class="navbar-section section-left d-flex align-items-center">
+                <img src="{% static 'Logo TI UB.webp' %}" alt="Logo TI" class="foto-navbar">
+                <img src="{% static 'Logo HMTI FT-UB.webp' %}" alt="Logo HMTI" class="foto-navbar">
+                <img src="{% static 'Logo KMTI 2025.webp' %}" alt="Logo KMTI" class="foto-navbar">
+            </div>
+
+            <div class="navbar-section section-center">
+                <a class="navbar-brand-center">
+                    <span>Pemungutan Suara Calon Ketua Umum</span>
+                    <span>HMTI FT-UB Periode 2026-2027</span>
+                </a>
+            </div>
+
+            <div class="navbar-section section-right d-flex justify-content-end align-items-center">
+                {% if request.session.pemilih_id or request.session.is_admin %}
+                    {% if request.session.pemilih_id %}
+                        <span class="navbar-nim d-none d-md-inline">{{ nim }}</span>
+                        <a href="{% url 'pemilwa:voter_logout' %}" class="btn-logout">Logout</a>
+                    {% elif request.session.is_admin %}
+                        <span class="navbar-nim">Admin</span>
+                        <a href="{% url 'pemilwa:admin_logout' %}" class="btn-logout">Logout</a>
+                    {% endif %}
+                {% else %}
+                    <div style="width: 80px;"></div>
+                {% endif %}
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="container mt-4">
+        {% if messages %}
+            <div class="messages-stack">
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show custom-alert auto-close" role="alert">
+                        <span class="alert-mark" aria-hidden="true"></span>
+                        <span class="alert-text">{{ message }}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <div class="alert-loading-bar"></div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer-kmti">
+        <span>Kongres Mahasiswa Teknik Industri</span> &mdash; Pemilwa 2026
+    </footer>
+
+    <!-- JS Global -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const alerts = document.querySelectorAll('.alert.auto-close');
+            alerts.forEach(function (alert) {
+                setTimeout(function () {
+                    alert.classList.remove('show');
+                    setTimeout(() => alert.remove(), 300);
+                }, 5000);
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

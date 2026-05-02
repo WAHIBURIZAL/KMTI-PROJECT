@@ -1,0 +1,266 @@
+<!-- pemilwa/templates/pemilwa/admin_dashboard.html -->
+{% extends 'pemilwa/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Dashboard Pemilihan</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="stats-card calon">
+            <div class="stats-number" id="stat-suara-calon">{{ suara_calon }}</div>
+            <div class="stats-label">
+                Suara untuk {{ calon.nama_calon|default:"Calon" }}
+            </div>
+            <div id="stat-persen-calon">{{ persen_calon }}%</div>
+        </div>
+
+        <div class="stats-card abstain">
+            <div class="stats-number" id="stat-suara-abstain">{{ suara_abstain }}</div>
+            <div class="stats-label">Suara Abstain</div>
+            <div id="stat-persen-abstain">{{ persen_abstain }}%</div>
+        </div>
+
+        <div class="stats-card total">
+            <div class="stats-number" id="stat-total-pemilih">{{ total_pemilih }}</div>
+            <div class="stats-label">Total Pemilih</div>
+            <div id="stat-total-terdaftar">
+                Terdaftar: {{ total_terdaftar }}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Grafik Perbandingan Suara</h5>
+            </div>
+
+            <div class="card-body d-flex align-items-center">
+                <canvas id="voteChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">Informasi Pemilih</h5>
+    </div>
+
+    <div class="card-body">
+        <ul class="list-group">
+
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Total Pemilih Terdaftar
+                <span class="badge bg-primary rounded-pill">
+                    {{ total_terdaftar }}
+                </span>
+            </li>
+
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Sudah Memilih
+                <span class="badge bg-success rounded-pill">
+                    {{ total_pemilih }}
+                </span>
+            </li>
+
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Belum Memilih
+                <span class="badge bg-warning rounded-pill">
+                    {{ belum_memilih }}
+                </span>
+            </li>
+
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Partisipasi
+                <span class="badge bg-info rounded-pill">
+                    {% widthratio total_pemilih total_terdaftar 100 %}%
+                </span>
+            </li>
+
+        </ul>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{% url 'pemilwa:login' %}" class="btn btn-secondary">
+        Kembali ke Halaman Login
+    </a>
+
+    <button onclick="manualRefresh()" class="btn btn-primary" id="btn-refresh">
+        🔄 Refresh Data Manual
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{ chart_data|json_script:"chart-data" }}
+<script>
+const ctx = document.getElementById('voteChart').getContext('2d');
+const initialData = JSON.parse(document.getElementById('chart-data').textContent);
+
+let lastDisplayedTotal = initialData.total_vote;
+let lastUpdateTime = Date.now();
+let voteChart = null;
+
+if (typeof Chart === 'undefined') {
+    ctx.canvas.parentElement.innerHTML = '<p class="chart-fallback">Grafik belum dapat dimuat. Data suara tetap diperbarui pada kartu statistik.</p>';
+} else {
+    voteChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: initialData.labels,
+            datasets: [{
+                label: 'Jumlah Suara',
+                data: initialData.data,
+
+                backgroundColor: [
+                    '#DED479',
+                    '#BEC4D9'
+                ],
+
+                borderColor: [
+                    '#A09323',
+                    '#9ca5c2'
+                ],
+
+                borderWidth: 2,
+                borderRadius: 12,
+                borderSkipped: false
+            }]
+        },
+
+        options: {
+            responsive: true,
+
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#444',
+                        font: {
+                            weight: '600'
+                        }
+                    }
+                }
+            },
+
+            scales: {
+                y: {
+                    beginAtZero: true,
+
+                    ticks: {
+                        precision: 0,
+                        color: '#666'
+                    },
+
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                },
+
+                x: {
+                    ticks: {
+                        color: '#666'
+                    },
+
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateDisplay(data) {
+
+    if (voteChart) {
+        voteChart.data.labels = data.labels;
+        voteChart.data.datasets[0].data = data.data;
+        voteChart.update();
+    }
+
+    document.getElementById('stat-suara-calon').innerText = data.data[0];
+    document.getElementById('stat-suara-abstain').innerText = data.data[1];
+    document.getElementById('stat-total-pemilih').innerText = data.total_vote;
+
+    const totalVote = Number(data.total_vote) || 0;
+    const pCalon = totalVote ? ((data.data[0] / totalVote) * 100).toFixed(1) : '0.0';
+    const pAbstain = totalVote ? ((data.data[1] / totalVote) * 100).toFixed(1) : '0.0';
+
+    document.getElementById('stat-persen-calon').innerText = pCalon + '%';
+    document.getElementById('stat-persen-abstain').innerText = pAbstain + '%';
+
+    lastDisplayedTotal = data.total_vote;
+    lastUpdateTime = Date.now();
+}
+
+function autoCheck() {
+
+    fetch(window.location.href, {
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+
+    .then(res => res.json())
+
+    .then(data => {
+
+        const sekarang = Date.now();
+        const selisihVote = data.total_vote - lastDisplayedTotal;
+
+        const sudah10Menit =
+            (sekarang - lastUpdateTime) >= 300000;
+
+        if (selisihVote >= 5 || sudah10Menit) {
+            updateDisplay(data);
+        }
+
+    })
+
+    .catch(err =>
+        console.error("Gagal sinkronisasi data:", err)
+    );
+}
+
+function manualRefresh() {
+
+    const btn = document.getElementById('btn-refresh');
+
+    btn.disabled = true;
+    btn.innerHTML = '⌛ Memperbarui...';
+
+    fetch(window.location.href, {
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+
+    .then(res => res.json())
+
+    .then(data => {
+
+        updateDisplay(data);
+
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = '🔄 Refresh Data Manual';
+        }, 1000);
+
+    });
+}
+
+setInterval(autoCheck, 30000);
+</script>
+{% endblock %}

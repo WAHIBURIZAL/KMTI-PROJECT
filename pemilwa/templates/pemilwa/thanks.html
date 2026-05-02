@@ -1,0 +1,84 @@
+<!-- pemilwa/templates/pemilwa/thanks.html -->
+{% extends 'pemilwa/base.html' %}
+{% load static %}
+
+{% block title %}Terima Kasih{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/thanks.css' %}">
+<div class="thanks-wrapper">
+
+    <div class="row justify-content-center w-100">
+        <div class="col-md-6 text-center">
+
+            <div class="card thanks-card">
+
+                <div class="card-body thanks-body">
+
+                    <div class="thanks-icon">
+                        🙏
+                    </div>
+
+                    <h2 class="thanks-title">
+                        Terima Kasih!
+                    </h2>
+
+                    <p class="thanks-subtitle">
+                        Suara Anda telah berhasil disimpan.
+                    </p>
+
+                    <p class="thanks-description">
+                        Terima kasih telah berpartisipasi dalam
+                        pemilihan Ketua Himpunan.
+                    </p>
+
+                    <hr>
+
+                    <p class="redirect-text">
+                        Anda akan dialihkan ke halaman login dalam
+                        <strong id="countdown">5</strong>
+                        detik...
+                    </p>
+
+                    <a
+                        href="{% url 'pemilwa:login' %}"
+                        class="btn btn-primary mt-3"
+                    >
+                        Kembali ke Halaman Login
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let seconds = 5;
+
+    const countdownElement =
+        document.getElementById('countdown');
+
+    const timer = setInterval(function () {
+
+        seconds--;
+
+        countdownElement.innerText = seconds;
+
+        if (seconds <= 0) {
+
+            clearInterval(timer);
+
+            window.location.href =
+                "{% url 'pemilwa:login' %}";
+        }
+
+    }, 1000);
+</script>
+{% endblock %}
