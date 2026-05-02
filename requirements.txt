@@ -22,7 +22,7 @@ cycler==0.12.1
 debugpy==1.8.20
 decorator==5.2.1
 deprecation==2.1.0
-Django==6.0.2
+Django==5.1.2
 dotenv==0.9.9
 et_xmlfile==2.0.0
 executing==2.2.1
@@ -43,14 +43,10 @@ httpx==0.28.1
 hyperframe==6.1.0
 idna==3.11
 ipykernel==7.2.0
-ipython==9.11.0
-ipython_pygments_lexers==1.1.1
 jedi==0.19.2
 Jinja2==3.1.6
 jsonschema==4.26.0
 jsonschema-specifications==2025.9.1
-jupyter_client==8.8.0
-jupyter_core==5.9.1
 kiwisolver==1.4.9
 lxml==6.1.0
 markdown-it-py==4.0.0
