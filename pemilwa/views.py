@@ -4,9 +4,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import IntegrityError, transaction
 from django.db.models import Count, Q
+from django.http import JsonResponse
 from django.utils import timezone
 from .models import Calon, Pemilih, Vote
-from django.http import JsonResponse
 
 WIB = dt_timezone(timedelta(hours=7), 'WIB')
 VOTING_CLOSE_AT = datetime(2026, 5, 4, 16, 0, tzinfo=WIB)
@@ -14,6 +14,10 @@ VOTING_CLOSE_AT = datetime(2026, 5, 4, 16, 0, tzinfo=WIB)
 
 def is_voting_closed():
     return timezone.now() >= VOTING_CLOSE_AT
+
+
+def healthz(_request):
+    return JsonResponse({'status': 'ok'})
 
 
 # ==================== SATU LOGIN UNTUK SEMUA ====================
