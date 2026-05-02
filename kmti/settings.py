@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-)y0z5gi5oje!0oy3-a@x)0=+g-b@mg12xx89-xav7xfjv(x2f4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['kmti-project.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
