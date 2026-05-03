@@ -95,10 +95,6 @@
     <a href="{% url 'pemilwa:login' %}" class="btn btn-secondary">
         Kembali ke Halaman Login
     </a>
-
-    <button onclick="manualRefresh()" class="btn btn-primary" id="btn-refresh">
-        🔄 Refresh Data Manual
-    </button>
 </div>
 {% endblock %}
 
@@ -234,32 +230,6 @@ function autoCheck() {
     );
 }
 
-function manualRefresh() {
-
-    const btn = document.getElementById('btn-refresh');
-
-    btn.disabled = true;
-    btn.innerHTML = '⌛ Memperbarui...';
-
-    fetch(window.location.href, {
-        headers: {
-            "X-Requested-With": "XMLHttpRequest"
-        }
-    })
-
-    .then(res => res.json())
-
-    .then(data => {
-
-        updateDisplay(data);
-
-        setTimeout(() => {
-            btn.disabled = false;
-            btn.innerHTML = '🔄 Refresh Data Manual';
-        }, 1000);
-
-    });
-}
 
 setInterval(autoCheck, 30000);
 </script>
