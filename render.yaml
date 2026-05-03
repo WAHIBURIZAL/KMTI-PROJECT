@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: kmti-project
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn kmti.wsgi:application
